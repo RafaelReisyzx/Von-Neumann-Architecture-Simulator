@@ -12,7 +12,7 @@ int main() {
         system.memoria.dados[4].inteiro = 3;
 
 
-        Instrucoes instr1 = {0, 1, 2, 3, 0, 0, 0};
+     Instrucoes instr1 = {0, 1, 2, 3, 0, 0, 0};
          system.memoria.dados[i].instrucao=instr1;
           i++;
         Instrucoes instr2 = {7, 4, 4, 0, 0, 0, 0};
@@ -27,6 +27,7 @@ int main() {
        Instrucoes instr5 = {2, 6, 5, 4, 1, 1, 0}; 
          system.memoria.dados[i].instrucao=instr5;
            i++;
+
  
 
     Pipeline(&system,i);  
