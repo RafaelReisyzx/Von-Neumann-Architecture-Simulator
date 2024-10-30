@@ -8,8 +8,9 @@ void decode(SYSTEM *system, int *operando1, int *operando2, int *operador, int *
     UC(system, operando1, operando2, operador, coreIDR, coreIDR1, coreIDR2, saida, r, r1, r2);
 }
 
-void execute(SYSTEM *system, int operador, int operando1, int operando2, int r, int r1, int r2, int coreIDR, int coreIDR1, int coreIDR2) {
-    ULA(system, operador, operando1, operando2, r, r1, r2, coreIDR, coreIDR1, coreIDR2);
+int execute(SYSTEM *system, int operador, int operando1, int operando2, int r, int r1, int r2, int coreIDR, int coreIDR1, int coreIDR2,int resultado) {
+    resultado=ULA(system, operador, operando1, operando2, r, r1, r2, coreIDR, coreIDR1, coreIDR2);
+    return resultado;
 }
 
 void memory_access(SYSTEM *system, int operador, int *saida, int *operando1, int coreIDR, int coreIDR1, int r, int r1) {
@@ -22,15 +23,22 @@ void memory_access(SYSTEM *system, int operador, int *saida, int *operando1, int
     }
 }
 
+void write_back(SYSTEM *system,int operador,int coreIDR,int r,int resultado){
+ if (operador != LOAD&&operador != STORE&&operador != IF_EQUAL&&operador != IF_LESS&&operador != IF_LESS) {   
+      system->cores[coreIDR].registradores[r]=resultado;
+    }
+
+}
+
 void Pipeline(SYSTEM *system, int i) {
-    int j, r, r1, r2, operando1, operando2, operador, coreIDR, coreIDR1, coreIDR2, saida;
+    int j, r, r1, r2, operando1, operando2, operador, coreIDR, coreIDR1, coreIDR2, saida,resultado;
     
     for (j = 0; j < i; j++) {
-        fetch(system);  // Estágio de Fetch
-        decode(system, &operando1, &operando2, &operador, &coreIDR, &coreIDR1, &coreIDR2, &saida, &r, &r1, &r2); // Estágio de Decodificação
-        execute(system, operador, operando1, operando2, r, r1, r2, coreIDR, coreIDR1, coreIDR2); // Estágio de Execução
-        memory_access(system, operador, &saida, &operando1, coreIDR, coreIDR1, r, r1); // Acesso à Memória
-
+        fetch(system);
+        decode(system, &operando1, &operando2, &operador, &coreIDR, &coreIDR1, &coreIDR2, &saida, &r, &r1, &r2);
+       resultado= execute(system, operador, operando1, operando2, r, r1, r2, coreIDR, coreIDR1, coreIDR2,resultado);
+        memory_access(system, operador, &saida, &operando1, coreIDR, coreIDR1, r, r1);
+        write_back(system,operador,coreIDR,r,resultado);
         system->pc++; 
     }
 }
@@ -183,29 +191,33 @@ void exibirMenu(SYSTEM *system) {
     } while (opcao != 6);
 }
 
-void ULA(SYSTEM *system,int opcode, int reg1, int reg2,int r,int r1,int r2,int coreIDR,int coreIDR1,int coreIDR2) {
+int ULA(SYSTEM *system,int opcode, int reg1, int reg2,int r,int r1,int r2,int coreIDR,int coreIDR1,int coreIDR2) {
     int resultado;
     switch (opcode) {
         case 0: // ADD
             resultado = reg1 + reg2;
             printf("ADD REG %d (Core:%d) [%d] = REG %d (Core:%d) [%d] + REG %d (Core:%d) [%d] \n",r,coreIDR, resultado, r1,coreIDR1, reg1,r2,coreIDR2, reg2);         
            system->cores[coreIDR].registradores[r]=resultado;
+        
             break;
         case 1: // SUB
             resultado = reg1 - reg2;
                      printf("SUB REG %d (Core:%d) [%d] = REG %d (Core:%d) [%d] - REG %d (Core:%d) [%d] \n",r,coreIDR, resultado, r1,coreIDR1, reg1,r2,coreIDR2, reg2);
             system->cores[coreIDR].registradores[r]=resultado;
+          
             break;
         case 2: // MUL
             resultado = reg1 * reg2;
             printf("MUL REG %d (Core:%d) [%d] = REG %d (Core:%d) [%d] * REG %d (Core:%d) [%d] \n",r,coreIDR, resultado, r1,coreIDR1, reg1,r2,coreIDR2, reg2);
            system->cores[coreIDR].registradores[r]=resultado;
+           
             break;
         case 3: // DIV
             if (reg2 != 0) {
                 resultado = reg1 / reg2;
             printf("DIV REG %d (Core:%d) [%d] = REG %d (Core:%d) [%d] / REG %d (Core:%d) [%d] \n",r,coreIDR, resultado, r1,coreIDR1, reg1,r2,coreIDR2, reg2);
            system->cores[coreIDR].registradores[r]=resultado;
+       
             } else {
                 printf("Erro de divisão por zero\n");
             }
@@ -241,6 +253,7 @@ void ULA(SYSTEM *system,int opcode, int reg1, int reg2,int r,int r1,int r2,int c
 
             break;
     }
+      return resultado;
 }
 
 void UC(SYSTEM *system, int *operando1, int *operando2, int *operador,int *coreIDR,int *coreIDR1,int *coreIDR2,int *saida,int *r,int *r1,int *r2) {
