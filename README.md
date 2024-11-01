@@ -1,5 +1,5 @@
 # Descrição do Algoritmo
-Este projeto implementa um sistema de processamento simples, simulado através de um modelo de arquitetura que utiliza múltiplos núcleos (cores) e uma estrutura de memória organizada. O sistema simula operações básicas de um processador, incluindo busca, decodificação, execução e acesso à memória.
+Este algoritmo é um simulador básico de uma Arquitetura de Von Neumann, que organiza um sistema de processamento com base na estrutura tradicional de memória única para dados e instruções. A simulação ilustra como essa arquitetura executa instruções de maneira sequencial, utilizando um ciclo de instruções que inclui as etapas de busca (fetch), decodificação (decode), execução (execute), acesso à memória (memory access) e escrita (write-back).
 
 # Estruturas de Dados
 - SYSTEM:representa o estado do sistema e contém os seguintes componentes:
@@ -30,6 +30,30 @@ Utilizei as seguintes constantes para representar operações básicas e condiç
 ```
 # Funcionamento
 
+1. Inicialização do Sistema (inicializarSistema):
+Primeiramente, o sistema é configurado, inicializando as memórias (principal e cache), os registradores de cada núcleo e os periféricos. Todos os registradores e memórias começam em zero.
+
+2. Configuração de Valores Iniciais:
+O programa coloca valores em certos registradores e posições da memória para ter dados prontos para a execução. Por exemplo:
+
+3. Aquí coloquei alguns exemplos de entrada definindo que a posição 100 da memória conterá o valor 20, o registrador R2 do núcleo 0 terá valor 10, e assim por diante.
+
+4. Instruções na Memória:
+Diversas instruções são configuradas na memória. Cada instrução contém informações como qual operação será realizada (adição, subtração, multiplicação, etc.), e quais registradores e núcleos serão usados.
+
+5. Pipeline (Pipeline):
+O pipeline é uma sequência de etapas que cada instrução segue até ser completamente executada. Esse processo ocorre para cada instrução na memória e segue os passos:
+
+  - Busca (Fetch): A instrução é buscada na memória e colocada no registrador de instrução para ser processada.
+  - Decodificação (Decode): A instrução é interpretada para identificar quais operações serão realizadas e quais registradores estão envolvidos.
+  - Execução (Execute): A operação indicada é realizada (por exemplo, soma, subtração, multiplicação, etc.).
+  - Acesso à Memória (Memory Access): Caso a operação envolva carregar ou salvar valores na memória, é feita uma operação de leitura ou escrita.
+  - Escrita (Write Back): O resultado da operação é armazenado no registrador apropriado do núcleo.
+  - Execução do Programa (Pipeline):
+Cada instrução, ao ser processada pelo pipeline, incrementa o contador do programa (pc), passando para a próxima instrução até que todas sejam executadas.
+
+6. Exibição do Menu (exibirMenu):
+Por fim, o sistema exibe um menu para mostrar o conteúdo de memórias e registradores, permitindo ao usuário verificar o que aconteceu após as instruções serem processadas.
 
 # Funções
 
