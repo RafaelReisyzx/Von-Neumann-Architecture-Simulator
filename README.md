@@ -99,7 +99,7 @@ O programa coloca valores em certos registradores e posições da memória para 
 Diversas instruções são configuradas na memória. Cada instrução contém informações como qual operação será realizada (adição, subtração, multiplicação, etc.), e quais registradores e núcleos serão usados.
 
 4. Pipeline (Pipeline):
-O pipeline é uma sequência de etapas que cada instrução segue até ser completamente executada. Esse processo ocorre para cada instrução na memória e segue os passos:
+Como foi dito antes, o pipeline é o ciclo ou sequência de etapas que cada instrução segue até ser completamente executada. Esse processo ocorre para cada instrução na memória e segue os passos:
 
   - Busca (Fetch): A instrução é buscada na memória e colocada no registrador de instrução para ser processada.
   - Decodificação (Decode): A instrução é interpretada para identificar quais operações serão realizadas e quais registradores estão envolvidos.
