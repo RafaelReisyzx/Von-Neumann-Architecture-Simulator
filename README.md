@@ -1,8 +1,20 @@
 # Descrição do Algoritmo
-Este algoritmo é um simulador básico de uma Arquitetura de Von Neumann, que organiza um sistema de processamento com base na estrutura tradicional de memória única para dados e instruções. A simulação ilustra como essa arquitetura executa instruções utilizando um ciclo de instruções que inclui as etapas de busca (fetch), decodificação (decode), execução (execute), acesso à memória (memory access) e escrita (write-back).
+Este algoritmo implementa um simulador da arquitetura de Von Neumann, demonstrando o funcionamento de um sistema de processamento baseado no modelo tradicional de memória unificada para dados e instruções. A simulação detalha como a arquitetura executa comandos através de um ciclo de instruções, que abrange as seguintes etapas:
+
+Busca (Fetch): O simulador recupera a próxima instrução a ser executada da memória principal.
+
+Decodificação (Decode): A instrução é decodificada para identificar a operação e os operandos necessários.
+
+Execução (Execute): A operação decodificada é realizada pela Unidade Lógica Aritmética (ULA) ou outro componente relevante.
+
+Acesso à Memória (Memory Access): Se necessário, a instrução pode acessar a memória principal para leitura ou escrita de dados.
+
+Escrita (Write-Back): O resultado da operação é escrito de volta nos registradores ou na memória.
+
+Este ciclo de instruções permite observar como as instruções são processadas e executadas. Além disso, o simulador incorpora a utilização de memória cache, memória principal e memória secundária.
 
 # Estruturas de Dados
-- SYSTEM:representa o estado do sistema e contém os seguintes componentes:
+- SYSTEM:contém os seguintes componentes:
   - cores: Um array de núcleos que contém registradores para cada core.
   - pc: O contador de programa, que indica a posição atual na memória de instruções.
   - cache: A estrutura de cache que armazena dados e tags.
