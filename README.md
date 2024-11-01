@@ -1,5 +1,5 @@
 # Descrição do Algoritmo
-Este algoritmo é um simulador básico de uma Arquitetura de Von Neumann, que organiza um sistema de processamento com base na estrutura tradicional de memória única para dados e instruções. A simulação ilustra como essa arquitetura executa instruções de maneira sequencial, utilizando um ciclo de instruções que inclui as etapas de busca (fetch), decodificação (decode), execução (execute), acesso à memória (memory access) e escrita (write-back).
+Este algoritmo é um simulador básico de uma Arquitetura de Von Neumann, que organiza um sistema de processamento com base na estrutura tradicional de memória única para dados e instruções. A simulação ilustra como essa arquitetura executa instruções utilizando um ciclo de instruções que inclui as etapas de busca (fetch), decodificação (decode), execução (execute), acesso à memória (memory access) e escrita (write-back).
 
 # Estruturas de Dados
 - SYSTEM:representa o estado do sistema e contém os seguintes componentes:
@@ -28,20 +28,65 @@ Utilizei as seguintes constantes para representar operações básicas e condiç
 #define LOAD 7         // Carregar valor
 #define STORE 8        // Armazenar valor
 ```
+# Componentes do Sistema
+
+ ![This is an image](https://github.com/RafaelReisyzx/Von-Neumann-Architecture-Simulator/blob/main/img/1.png)
+
+### Registradores
+Essas são pequenas unidades de armazenamento que mantêm dados temporários, como valores intermediários das operações. Modelados geralmente por um vetor ou matriz, cada posição representa um registrador específico. Isso permite fácil acesso e manipulação direta dos dados pela CPU.
+
+### Unidade de Controle (UC)
+Este componente é responsável por interpretar e decodificar as instruções do programa. Uma vez decodificadas, a UC gera sinais de controle para os outros componentes, organizando e sequenciando as operações da CPU. A UC é crucial para orquestrar o fluxo de dados e instruções no sistema, garantindo que cada componente atue na ordem correta.
+
+### Unidade Lógica e Aritmética (ULA)
+A ULA executa operações aritméticas (como soma e subtração) e lógicas (como AND, OR) necessárias para a execução de instruções. Internamente, pode-se modelá-la com funções matemáticas específicas, aplicadas aos dados carregados dos registradores, realizando as operações conforme determinado pelas instruções da CPU.
+
+### Contador de Programa (PC)
+O PC guarda o endereço da próxima instrução a ser executada, garantindo a continuidade das operações do programa. A cada nova instrução lida, o PC é incrementado, movendo-se para o próximo endereço de instrução. Esse contador pode ser implementado como uma variável simples, que é atualizada constantemente ao longo da execução.
+
+### Conjunto de Instruções
+O conjunto de instruções define as operações que a CPU pode realizar. Cada instrução possui um opcode (código que indica a operação) e operandos (valores sobre os quais a operação será realizada). Exemplos incluem:
+
+  - LOAD: Carrega um valor da memória para um registrador.
+  - STORE: Armazena um valor do registrador na memória.
+  - ADD, SUB: Realizam operações aritméticas entre registradores.
+
+### Pipeline
+O pipeline permite que múltiplas instruções sejam processadas simultaneamente, aumentando a eficiência. O modelo MIPS de cinco estágios é comumente utilizado:
+
+  - IF (Instruction Fetch): A instrução é buscada da memória e armazenada no registrador de instrução. O PC é atualizado para apontar para a próxima instrução.
+  - ID (Instruction Decode): A instrução é decodificada e os operandos são carregados dos registradores.
+  - EX (Execute): A ULA executa a operação definida pela instrução.
+  - MEM (Memory Access): Ocorre o acesso à memória caso seja necessário (por exemplo, LOAD ou STORE).
+  - WB (Write Back): O resultado é escrito no registrador de destino.
+
+### Cache
+A cache é uma memória de acesso rápido para armazenar dados frequentemente usados, reduzindo o tempo de acesso à memória principal. No simulador, a cache será:
+Tabela Associativa ou Hash: Facilitando a localização de dados.
+Mapeamento Direto com Substituição FIFO: A política FIFO remove o dado mais antigo quando o espaço é necessário para um novo dado.
+Política de Escrita Write-back: Os dados são escritos na memória principal apenas ao serem removidos da cache.
+
+### Memória Principal
+Representada por um vetor, simula a RAM e permite operações de leitura e escrita que conectam a CPU aos dados principais do programa. Ao modelar, o vetor facilita o acesso sequencial e endereçável à memória, permitindo que a CPU obtenha dados rapidamente conforme necessário.
+
+### Memória Secundária (Disco)
+A memória secundária, ou disco, é um armazenamento não volátil, implementado como uma matriz para simular um sistema de arquivos onde dados persistem mesmo após o desligamento do sistema. Funções de leitura e escrita permitem o armazenamento a longo prazo, simulando o acesso a um disco rígido real.
+
+### Periféricos
+São representados por variáveis booleanas que indicam se um periférico está disponível ou não. Quando um processo da CPU requisita o uso de um periférico, isso gera eventos de entrada e saída (E/S). Esses eventos controlam as interações com dispositivos externos, como impressoras ou discos externos, garantindo que o simulador também modele operações além do processamento central.
+
 # Funcionamento
 
 1. Inicialização do Sistema (inicializarSistema):
 Primeiramente, o sistema é configurado, inicializando as memórias (principal e cache), os registradores de cada núcleo e os periféricos. Todos os registradores e memórias começam em zero.
 
 2. Configuração de Valores Iniciais:
-O programa coloca valores em certos registradores e posições da memória para ter dados prontos para a execução. Por exemplo:
+O programa coloca valores em certos registradores e posições da memória para ter dados prontos para a execução. Por exemplo:a posição 100 da memória conterá o valor 20, o registrador R2 do núcleo 0 terá valor 10, e assim por diante.
 
-3. Aquí coloquei alguns exemplos de entrada definindo que a posição 100 da memória conterá o valor 20, o registrador R2 do núcleo 0 terá valor 10, e assim por diante.
-
-4. Instruções na Memória:
+3. Instruções na Memória:
 Diversas instruções são configuradas na memória. Cada instrução contém informações como qual operação será realizada (adição, subtração, multiplicação, etc.), e quais registradores e núcleos serão usados.
 
-5. Pipeline (Pipeline):
+4. Pipeline (Pipeline):
 O pipeline é uma sequência de etapas que cada instrução segue até ser completamente executada. Esse processo ocorre para cada instrução na memória e segue os passos:
 
   - Busca (Fetch): A instrução é buscada na memória e colocada no registrador de instrução para ser processada.
@@ -52,7 +97,7 @@ O pipeline é uma sequência de etapas que cada instrução segue até ser compl
   - Execução do Programa (Pipeline):
 Cada instrução, ao ser processada pelo pipeline, incrementa o contador do programa (pc), passando para a próxima instrução até que todas sejam executadas.
 
-6. Exibição do Menu (exibirMenu):
+5. Exibição do Menu (exibirMenu):
 Por fim, o sistema exibe um menu para mostrar o conteúdo de memórias e registradores, permitindo ao usuário verificar o que aconteceu após as instruções serem processadas.
 
 # Funções
