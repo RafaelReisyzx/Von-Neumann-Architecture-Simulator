@@ -27,19 +27,20 @@ Este ciclo de instruções permite observar como as instruções são processada
   - Register, Register1, Register2: Registradores envolvidos na operação.
   - coreIDR, coreIDR1, coreIDR2: Identificadores de cores para operações paralelas.
 
-# Definições de Operações
-Utilizei as seguintes constantes para representar operações básicas e condições no código:
-```
-#define ADD 0          // Adição
-#define SUB 1          // Subtração
-#define DIV 2          // Divisão
-#define MUL 3          // Multiplicação
-#define IF_GREATER 4   // Se maior
-#define IF_LESS 5      // Se menor
-#define IF_EQUAL 6     // Se igual
-#define LOAD 7         // Carregar valor
-#define STORE 8        // Armazenar valor
-```
+# Instruções Suportadas
+
+No sistema, você pode usar as seguintes instruções:
+
+- ADD (Opcode 0): Soma dois valores de registradores.
+- SUB (Opcode 1): Subtrai um valor de outro.
+- DIV (Opcode 2): Divide um valor por outro.
+- MUL (Opcode 3): Multiplica dois valores.
+- IF_GREATER (Opcode 4): Condição de verificação se o valor é maior que o outro.
+- IF_LESS (Opcode 5): Condição de verificação se o valor é menor que o outro.
+- IF_EQUAL (Opcode 6): Condição de verificação se os valores são iguais.
+- LOAD (Opcode 7): Carrega dados da memória.
+- STORE (Opcode 8): Armazena dados na memória.
+
 # Componentes do Sistema
 
  ![This is an image](https://github.com/RafaelReisyzx/Von-Neumann-Architecture-Simulator/blob/main/img/1.png)
@@ -282,3 +283,6 @@ Existem três comandos principais que você pode usar no Makefile:
 
 Em resumo, para executar o programa, você precisa navegar até o diretório raiz do projeto e executar o comando make para compilar o programa e, em seguida, 
 executar o comando make run para executá-lo.Se você precisar limpar a compilação anterior, pode usar o comando make clean antes de executar a compilação.
+
+## Contato
+Se você tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato comigo pelo e-mail: [rafaelreismrg@gmail.com](mailto:rafaelreismrg@gmail.com).
