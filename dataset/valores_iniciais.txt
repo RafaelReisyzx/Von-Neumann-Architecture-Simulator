@@ -1,0 +1,9 @@
+Registradores:
+2 10
+3 5
+33 30
+Memória Principal:
+100 20
+4 3
+Memória Secundaria:
+200 15
