@@ -1,4 +1,6 @@
 #include "system.h"
+#include "cpu.h"
+#include "pipeline.h"
 
 int main() {
     SYSTEM system;
@@ -28,6 +30,8 @@ int main() {
        Instrucoes instr5 = {2, 6, 5, 4, 1, 1, 0}; 
          system.memoria.dados[i].instrucao=instr5;
            i++;
+
+ 
 
     Pipeline(&cpu,&system,i);  
 
