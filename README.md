@@ -393,4 +393,4 @@ executar o comando make run para executá-lo.Se você precisar limpar a compila�
 ___
 
 ## Contato
-Se você tiver alguma dúvida ou sugestão, sinta-se à vontade para entrar em contato comigo pelo telegram: [Link](https://t.me/yyy6666666yyy).
+Telegram: [Rafael Reis](https://t.me/yyy6666666yyy).
