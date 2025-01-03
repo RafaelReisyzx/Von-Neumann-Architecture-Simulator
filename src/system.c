@@ -80,4 +80,94 @@ int LOAD=7;
         printf("STORE MEM %d [%d] = REG %d (Core:%d) [%d] \n",r, *saida,r1,coreIDR, *operando1);
        *saida=*operando1;
     }
+
+}
+
+int opcodeFromString(const char* instrucao) {
+    if (strcmp(instrucao, "ADD") == 0) return 0;
+    if (strcmp(instrucao, "SUB") == 0) return 1;
+    if (strcmp(instrucao, "DIV") == 0) return 2;
+    if (strcmp(instrucao, "MUL") == 0) return 3;
+    if (strcmp(instrucao, "IF_GREATER") == 0) return 4;
+    if (strcmp(instrucao, "IF_LESS") == 0) return 5;
+    if (strcmp(instrucao, "IF_EQUAL") == 0) return 6;
+    if (strcmp(instrucao, "LOAD") == 0) return 7;
+    if (strcmp(instrucao, "STORE") == 0) return 8;
+    return -1; 
+}
+
+void carregarInstrucoesDeArquivo(const char* caminho, SYSTEM* system, int* contador) {
+    FILE* arquivo = fopen(caminho, "r");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo de instruções");
+        exit(EXIT_FAILURE);
+    }
+
+    char linha[MAX_LINHA];
+    int i = 0;
+
+    while (fgets(linha, sizeof(linha), arquivo) != NULL) {
+        char instrucao[20];
+        int reg, reg1, reg2;
+        if (sscanf(linha, "%s %d %d %d", instrucao, &reg, &reg1, &reg2) != 4) {
+            fprintf(stderr, "Formato inválido na linha: %s", linha);
+            continue;
+        }
+
+        int opcode = opcodeFromString(instrucao);
+        if (opcode == -1) {
+            fprintf(stderr, "Instrução desconhecida: %s\n", instrucao);
+            continue;
+        }
+
+        Instrucoes novaInstrucao = {opcode, reg, reg1, reg2, 0, 0, 0};
+        system->memoria.dados[i].instrucao = novaInstrucao;
+        i++;
+    }
+
+    fclose(arquivo);
+    *contador = i; 
+}
+
+
+void carregarValoresIniciais(const char* caminho, CPU* cpu, SYSTEM* system) {
+    FILE* arquivo = fopen(caminho, "r");
+    if (arquivo == NULL) {
+        perror("Erro ao abrir o arquivo");
+        exit(EXIT_FAILURE);
+    }
+
+    char linha[MAX_LINHA];
+    int modo = 0; // 0: nenhum, 1: Registradores, 2: Memória Principal, 3: Memória Secundária
+
+    while (fgets(linha, sizeof(linha), arquivo)) {
+        if (strstr(linha, "Registradores:")) {
+            modo = 1;
+        } else if (strstr(linha, "Memória Principal:")) {
+            modo = 2;
+        } else if (strstr(linha, "Memória Secundaria:")) {
+            modo = 3;
+        } else if (isdigit(linha[0])) {
+            int posicao, valor;
+            sscanf(linha, "%d %d", &posicao, &valor);
+
+            if (modo == 1) { 
+                int regID = posicao % NUM_REGISTRADORES; 
+                int coreID = 0; 
+                if (coreID < NUM_CORES) {
+                    cpu->cores[coreID].registradores[regID] = valor;
+                }
+            } else if (modo == 2) { 
+                if (posicao < MEM_SIZE) {
+                    system->memoria.dados[posicao].inteiro = valor;
+                }
+            } else if (modo == 3) { 
+                if (posicao < DISK_SIZE) {
+                    system->disco.dados[posicao].inteiro = valor;
+                }
+            }
+        }
+    }
+
+    fclose(arquivo);
 }
