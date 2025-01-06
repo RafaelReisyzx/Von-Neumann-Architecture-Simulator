@@ -12,22 +12,6 @@ Acesso à Memória (Memory Access): Se necessário, a instrução pode acessar a
 Escrita (Write-Back): O resultado da operação é escrito de volta nos registradores ou na memória.
 
 Este ciclo de instruções permite observar como as instruções são processadas e executadas. Além disso, o simulador incorpora a utilização de memória cache, memória principal e memória secundária.
-
-___
-
-# Estruturas de Dados
-- SYSTEM:contém os seguintes componentes:
-  - cores: Um array de núcleos que contém registradores para cada core.
-  - pc: O contador de programa, que indica a posição atual na memória de instruções.
-  - cache: A estrutura de cache que armazena dados e tags.
-  - memoria: A memória principal do sistema.
-  - disco: A memória secundária (simulando um disco).
-  - periferico: Um array de dispositivos periféricos.
-  
-- Instruções:A estrutura Instrucoes define uma instrução com os seguintes campos:
-  - Opcode: O código da operação a ser executada.
-  - Register, Register1, Register2: Registradores envolvidos na operação.
-  - coreIDR, coreIDR1, coreIDR2: Identificadores de cores para operações paralelas.
  
 ___
 
@@ -98,29 +82,32 @@ ___
 
 # Funcionamento
 
-1. Inicialização do Sistema (inicializarSistema):
-Primeiramente, o sistema é configurado, inicializando as memórias (principal e cache), os registradores de cada núcleo e os periféricos. Todos os registradores e memórias começam em zero.
+1. Inicialização do Sistema
+A primeira etapa consiste na configuração inicial do sistema, onde as memórias (principal e cache), os registradores de cada núcleo e os periféricos são devidamente configurados. No momento da inicialização, todos os registradores e memórias são zerados para garantir um estado limpo antes da execução do programa.
 
-2. Configuração de Valores Iniciais:
-O programa coloca valores em certos registradores e posições da memória para ter dados prontos para a execução. Por exemplo:a posição 100 da memória conterá o valor 20, o registrador R2 do núcleo 0 terá valor 10, e assim por diante.
+2. Configuração de Valores Iniciais
+Após a inicialização, o sistema configura valores predefinidos em registradores específicos e em certas posições da memória. Por exemplo:
 
-3. Instruções na Memória:
-Diversas instruções são configuradas na memória. Cada instrução contém informações como qual operação será realizada (adição, subtração, multiplicação, etc.), e quais registradores e núcleos serão usados.
+A posição 100 da memória pode ser configurada com o valor 20.
+O registrador R2 do núcleo 0 pode ser atribuído o valor 10, entre outros.
 
-4. Pipeline (Pipeline):
-Como foi dito antes, o pipeline é o ciclo ou sequência de etapas que cada instrução segue até ser completamente executada. Esse processo ocorre para cada instrução na memória e segue os passos:
+3. Carregamento e Execução de Instruções
+O programa carrega uma sequência de instruções na memória. Cada instrução contém informações essenciais sobre a operação a ser realizada (como soma, subtração, multiplicação, etc.) e os registradores que participarão da operação. 
 
-  - Busca (Fetch): A instrução é buscada na memória e colocada no registrador de instrução para ser processada.
-  - Decodificação (Decode): A instrução é interpretada para identificar quais operações serão realizadas e quais registradores estão envolvidos.
-  - Execução (Execute): A operação indicada é realizada (por exemplo, soma, subtração, multiplicação, etc.).
-  - Acesso à Memória (Memory Access): Caso a operação envolva carregar ou salvar valores na memória, é feita uma operação de leitura ou escrita.
-  - Escrita (Write Back): O resultado da operação é armazenado no registrador apropriado do núcleo.
-  - Execução do Programa (Pipeline):
-Cada instrução, ao ser processada pelo pipeline, incrementa o contador do programa (pc), passando para a próxima instrução até que todas sejam executadas.
+4. Pipeline de Execução
+O pipeline de execução é um processo dividido em várias etapas, garantindo que as instruções sejam executadas de forma eficiente e sequencial. Cada ciclo de instrução passa por uma série de estágios para sua execução:
 
-5. Exibição do Menu (exibirMenu):
-Por fim, o sistema exibe um menu para mostrar o conteúdo de memórias e registradores, permitindo ao usuário verificar o que aconteceu após as instruções serem processadas.
+ - Busca (Fetch): A instrução é buscada na memória e armazenada no registrador de instrução, para ser processada na sequência.
+ - Decodificação (Decode): A instrução é decodificada, determinando qual operação será realizada e quais registradores e núcleos são necessários para isso.
+ - Execução (Execute): A operação é efetivamente realizada. Dependendo do tipo de instrução, pode ser uma soma, subtração ou outra operação aritmética.
+ - Acesso à Memória (Memory Access): Caso a instrução envolva acessar a memória (para ler ou escrever dados), a operação de leitura ou escrita é realizada neste estágio.
+ - Escrita de Resultado (Write Back): O resultado da operação é gravado no registrador de destino, finalizando a execução da instrução.
 
+5. Execução do Programa
+Após o processamento das instruções, o contador do programa (PC - Program Counter) é incrementado a cada nova instrução que é buscada e executada, avançando até que todas as instruções tenham sido processadas. Durante essa execução, os dados nos registradores e na memória vão sendo alterados conforme as operações são realizadas.
+
+6. Exibição do Estado do Sistema
+Após a execução das instruções, o sistema exibe um menu para permitir que o usuário visualize o estado atual dos registradores e da memória. Esse menu oferece uma forma de verificação dos resultados obtidos após a execução do programa, fornecendo feedback sobre o impacto das instruções no sistema.
 ___
 
 # Exemplo
@@ -130,246 +117,83 @@ Abaixo tem alguns exemplos e uma análise de cada um em detalhes:
 
 ### Valores Iniciais:
 
-No exemplo, alguns valores são definidos previamente para os registros e a memória:
+No exemplo, alguns valores são definidos previamente para os registradores e a memória:
 
 ```
-system.memoria.dados[100].inteiro = 20;  // Memória 100 recebe o valor 20
-cpu.cores[0].registradores[2] = 10;  // Registro R2 do Core 0 recebe o valor 10
-cpu.cores[0].registradores[3] = 5;   // Registro R3 do Core 0 recebe o valor 5
-cpu.cores[1].registradores[1] = 30;  // Registro R1 do Core 1 recebe o valor 30
-system.memoria.dados[4].inteiro = 3;  // Memória 4 recebe o valor 3
+Registradores:
+2 10
+3 5
+33 30
+Memória Principal:
+100 20
+4 3
+Memória Secundaria:
+200 15
 ```
 
-### Explicação das Instruções:
-
-As instruções possuem 7 campos (inteiros), e cada campo tem um papel específico na execução das instruções no sistema.
-
-> - Opcode (Código da Operação)
-> O campo Opcode especifica o tipo de operação que será realizada. Cada valor de Opcode corresponde a uma operação específica.
-    
-> - Register (Registrador de Destino)
-> Este campo define o registrador de destino onde o resultado da operação será armazenado. Em operações como ADD, SUB, MUL, DIV, o resultado final da operação vai para este registrador. Por exemplo, se estivermos fazendo uma operação ADD, o resultado será armazenado no registrador especificado aqui.
-
-> - Register1 (Primeiro Operando)
->  Este campo define o primeiro operando da operação. Pode ser um registrador, valor imediato ou um valor da memória, dependendo da operação. Por exemplo, em uma instrução ADD REG1 = REG2 + REG3, Register1 pode conter o número do registrador que será somado (REG2).
-   
-> - Register2 (Segundo Operando)
-> Este campo define o segundo operando da operação. Similar ao Register1, é outro valor que será usado na operação. Pode ser um registrador, valor imediato ou valor de memória.
-Em uma instrução como MUL REG5 = REG1 * REG2, Register2 seria o registrador que armazena o segundo valor a ser multiplicado.
-
-> - coreIDR (ID do Núcleo de Execução 1)
-> Este campo define qual núcleo de processamento (core) irá executar a operação. O valor pode ser o ID de um núcleo específico (por exemplo, 0 para o primeiro núcleo, 1 para o segundo, etc.).
-
-> - coreIDR1 (ID do Núcleo de Execução 2)
-> Similar ao coreIDR, mas é um segundo valor que pode indicar outro núcleo de execução que será usado para a operação.
-
-> - coreIDR2 (ID do Núcleo de Execução 3)
-> Similar ao coreIDR e coreIDR1, mas para um terceiro núcleo, caso o sistema tenha múltiplos núcleos. Pode ser usado em instruções que exigem mais de dois núcleos ou para operações ainda mais paralelizadas.
-
-Em muitas instruções, nem todos os campos são necessários. Quando um campo não é relevante para a operação específica, ele pode ser definido como 0. Isso acontece porque o sistema foi projetado para usar a mesma estrutura para diferentes tipos de instruções, e não todas as instruções precisam de todos os campos.
 
 ### Explicação do exemplo:
  
-##### Instr1:{0, 1, 2, 3, 0, 0, 0};
- - Op = 0: A operação é ADD (adição).
- - Regs: O valor de REG 2 (Core 0) e REG 3 (Core 0) serão somados, e o resultado será armazenado em REG 1 (Core 0).
- - Operação: REG 2 (10) + REG 3 (5) → 15.
- - Resultado: REG 1 (Core 0) agora terá o valor 15.
+1. ADD 1 2 3
+A instrução ADD soma os valores dos registradores R2 e R3 e armazena o resultado no registrador R1.
 
-##### Instr2:{7, 4, 4, 0, 0, 0, 0};
- - Op = 7: A operação é LOAD (carregar valor de memória para o registrador).
- - Regs: O valor da posição de memória 4 (que é 3) será carregado para REG 4 (Core 0).
- - Resultado: REG 4 (Core 0) agora terá o valor 3.
-   
-##### Instr3:{3, 5, 1, 4, 1, 1, 0};
- - Op = 3: A operação é MUL (multiplicação).
- - Regs: O valor de REG 1 (Core 1) será multiplicado pelo valor de REG 4 (Core 0), e o resultado será armazenado em REG 5 (Core 1).
- - Operação: REG 1 (30) * REG 4 (3) → 90.
- - Resultado: REG 5 (Core 1) agora terá o valor 90.
-   
-##### Instr4:{8, 1, 5, 0, 0, 1, 0};
- - Op = 8: A operação é STORE (armazenar valor de um registrador na memória).
- - Regs: O valor de REG 5 (Core 1) será armazenado na posição de memória 1.
- -Resultado: MEM 1 agora terá o valor 90.
+ - R2 = 10
+ - R3 = 5
+ - A operação é: R1 = R2 + R3 = 10 + 5 = 15
 
-##### Instr5:{2, 6, 5, 4, 1, 1, 0};
- - Op = 2: A operação é DIV (divisão).
- - Regs: O valor de REG 5 (Core 1) será dividido pelo valor de REG 4 (Core 0), e o resultado será armazenado em REG 6 (Core 1).
- - Operação: REG 5 (90) / REG 4 (3) → 30.
- - Resultado: REG 6 (Core 1) agora terá o valor 30.
+Novo estado dos registradores:
 
-### Resultados Finais:
-Após a execução das instruções, os valores nos registradores e na memória serão os seguintes:
+ - R1 = 15
 
-##### Registradores:
+2. LOAD 4 4 0
+A instrução LOAD carrega um valor da memória para o registrador especificado. Aqui, a memória na posição 4 é carregada no registrador R4.
 
- - REG 1 (Core 0): 15 (resultado da soma entre REG 2 e REG 3)
- - REG 2 (Core 0): 10 (valor original)
- - REG 3 (Core 0): 5 (valor original)
- - REG 4 (Core 0): 3 (valor carregado da memória 4)
- - REG 5 (Core 1): 90 (resultado da multiplicação de REG 1 e REG 4)
- - REG 6 (Core 1): 30 (resultado da divisão de REG 5 por REG 4)
-   
-##### Memória:
+ - Mem[4] = 3
+ - A operação é: R4 = Mem[4] = 3
 
- - MEM 1: 90 (valor armazenado de REG 5)
- - MEM 4: 3 (valor original)
- - MEM 100: 20 (valor original)
+Novo estado dos registradores:
 
-___
+ - R4 = 3
 
-# Funções
+3. MUL 5 1 4
+A instrução MUL multiplica os valores dos registradores R1 e R4 e armazena o resultado no registrador R5.
 
-### `fetch(SYSTEM system)`
-Objetivo: Carregar a instrução que está no endereço de memória indicado pelo contador de programa (pc) para o registrador de instrução.
+ - R1 = 15
+ - R4 = 3
+ - A operação é: R5 = R1 * R4 = 15 * 3 = 45
 
-```
-void fetch(SYSTEM *system) {
-    system->registradorInstrucao = system->memoria.dados[system->pc].instrucao;
-}
-```
-Explicação:
+Novo estado dos registradores:
 
-1. system->registradorInstrucao: A instrução atual que será executada é armazenada neste registrador.
-2. system->memoria.dados[system->pc].instrucao: A instrução é lida da memória na posição indicada pelo contador de programa (pc). O contador pc aponta para a próxima instrução a ser executada.
+ - R5 = 45
 
-### `decode(SYSTEM *system, int *operando1, int *operando2, int *operador, int *coreIDR, int *coreIDR1, int *coreIDR2, int *saida, int *r, int r1, int r2)`
-Objetivo: Decodificar a instrução atual e extrair os operandos e outros parâmetros necessários para a execução.
+4. STORE 1 5 0
+A instrução STORE armazena o valor do registrador R5 na posição 1 da memória principal.
 
-```
-void decode(SYSTEM *system, int *operando1, int *operando2, int *operador, int *coreIDR, int *coreIDR1, int *coreIDR2, int *saida, int *r, int *r1, int *r2) {
-    UC(system, operando1, operando2, operador, coreIDR, coreIDR1, coreIDR2, saida, r, r1, r2);
-}
-```
-Explicação:
+ - R5 = 45
+ - A operação é: Mem[1] = R5 = 45
 
-1. A função UC (Unidade de Controle) é chamada para preencher os parâmetros passados por referência (operando1, operando2, etc.) com os valores extraídos da instrução armazenada no registrador de instrução.
-2. Os parâmetros são utilizados na fase de execução, permitindo que o sistema saiba quais registros usar e qual operação realizar.
-  
-### `int execute(SYSTEM system, int operador, int operando1, int operando2, int r, int r1, int r2, int coreIDR, int coreIDR1, int coreIDR2, int resultado)`
-Objetivo: Executar a operação especificada pela instrução.
+Novo estado da memória principal:
 
-```
-int execute(SYSTEM *system, int operador, int operando1, int operando2, int r, int r1, int r2, int coreIDR, int coreIDR1, int coreIDR2,int resultado) {
-    resultado=ULA(system, operador, operando1, operando2, r, r1, r2, coreIDR, coreIDR1, coreIDR2);
-    return resultado;
-}
-```
+ - Mem[1] = 45
 
-1. resultado = ULA(...): Chama a Unidade Lógica Aritmética (ULA) para realizar a operação aritmética ou lógica correspondente ao operador (como adição, subtração, etc.) usando os operandos fornecidos (operando1, operando2).
-2. A função retorna o resultado da operação, que pode ser armazenado em um registrador ou utilizado em um próximo passo.
+5. SUB 6 5 4
+A instrução SUB subtrai o valor do registrador R4 do valor do registrador R5 e armazena o resultado no registrador R6.
 
-### `void memory_access(SYSTEM *system, int operador, int saida, int operando1, int coreIDR, int coreIDR1, int r, int r1)`
-Objetivo: Acessar a memória com base na operação (LOAD ou STORE) especificada.
+ - R5 = 45
+ - R4 = 3
+ - A operação é: R6 = R5 - R4 = 45 - 3 = 42
 
-```
-void memory_access(SYSTEM *system, int operador, int *saida, int *operando1, int coreIDR, int coreIDR1, int r, int r1) {
-    if (operador == LOAD) {
-        *saida = system->memoria.dados[r].inteiro;
-        InstructionsMemory(system, LOAD, saida, operando1, coreIDR, coreIDR1, r, r1);
-    } else if (operador == STORE) {
-        *saida = system->memoria.dados[r1].inteiro;
-        InstructionsMemory(system, STORE, saida, operando1, coreIDR, coreIDR1, r, r1);
-    }
-}
-```
-Explicação:
+Novo estado dos registradores:
 
-1. A função verifica se o operador é um LOAD ou STORE.
-2. LOAD: Se for um LOAD, o valor do endereço de memória (r) é lido e armazenado em saida.
-3. STORE: Se for um STORE, o valor de r1 é lido e armazenado em saida.
-4. Ambas as operações chamam InstructionsMemory, que provavelmente gerencia a lógica de execução da instrução na memória.
+ - R6 = 42
 
-### `void write_back(SYSTEM system,int operador,int coreIDR,int r,int resultado)`
-Objetivo: Escrever o resultado da execução de volta nos registradores apropriados.
 
-```
-void write_back(SYSTEM *system,int operador,int coreIDR,int r,int resultado) {
-    if (operador != LOAD && operador != STORE && operador != IF_EQUAL && operador != IF_LESS) {   
-        system->cores[coreIDR].registradores[r] = resultado;
-    }
-}
-```
-Explicação:
+6. IF_EQUAL 0 1 2
+A instrução IF_EQUAL verifica se os valores nos registradores R1 e R2 são iguais. Se forem, a execução do programa será condicionada a isso. Como R1 é 15 e R2 é 10, os valores não são iguais, então o salto condicional não ocorre.
 
-1. A função verifica se o operador não é um LOAD, STORE, ou instruções de comparação.
-2. Se não for, o resultado da execução é armazenado no registrador r do núcleo identificado por coreIDR.
-
-### `void Pipeline(SYSTEM system, int i)`
-Objetivo: Implementar a execução em pipeline, permitindo que várias instruções sejam processadas simultaneamente.
-
-```
-void Pipeline(SYSTEM *system, int i) {
-    int j, r, r1, r2, operando1, operando2, operador, coreIDR, coreIDR1, coreIDR2, saida, resultado;
-    
-    for (j = 0; j < i; j++) {
-        fetch(system);
-        decode(system, &operando1, &operando2, &operador, &coreIDR, &coreIDR1, &coreIDR2, &saida, &r, &r1, &r2);
-        resultado = execute(system, operador, operando1, operando2, r, r1, r2, coreIDR, coreIDR1, coreIDR2, resultado);
-        memory_access(system, operador, &saida, &operando1, coreIDR, coreIDR1, r, r1);
-        write_back(system, operador, coreIDR, r, resultado);
-        system->pc++; 
-    }
-}
-```
-Explicação:
-
-1. Um loop é executado i vezes, onde cada iteração processa uma instrução.
-2. fetch: Carrega a próxima instrução.
-3. decode: Decodifica a instrução e obtém os operandos e operadores necessários.
-4. execute: Executa a operação e obtém o resultado.
-5. memory_access: Acessa a memória se necessário, dependendo da operação.
-6. write_back: Armazena o resultado de volta no registrador apropriado.
-7. Finalmente, o contador de programa (pc) é incrementado para apontar para a próxima instrução.
-
-### `void inicializarSistema(SYSTEM system)`
-Objetivo: Inicializar o sistema, configurando os registradores, memória e periféricos.
-
-```
-void inicializarSistema(SYSTEM *system) {
-    int i, j;
-    for (i = 0; i < NUM_CORES; i++) {
-        for (j = 0; j < NUM_REGISTRADORES; j++) {
-            system->cores[i].registradores[j] = 0; 
-        }
-    }
-    system->pc = 0;
-
-    system->cache.fifo_index = 0;
-    for (i = 0; i < CACHE_SIZE; i++) {
-        system->cache.dados[i] = 0;
-        system->cache.tags[i] = -1; 
-    }
-
-    for (i = 0; i < MEM_SIZE; i++) {
-        system->memoria.dados[i].inteiro = 0;
-        system->memoria.dados[i].instrucao.Register1 = 0;
-        system->memoria.dados[i].instrucao.Register2 = 0;
-        system->memoria.dados[i].instrucao.Register = 0;
-        system->memoria.dados[i].instrucao.Opcode = 0;
-        system->memoria.dados[i].instrucao.coreIDR = 0;
-        system->memoria.dados[i].instrucao.coreIDR1 = 0;
-        system->memoria.dados[i].instrucao.coreIDR2 = 0;
-    }
-
-    for (i = 0; i < DISK_SIZE; i++) {
-        system->disco.dados[i].inteiro = 0;
-        system->disco.dados[i].instrucao.Register1 = 0;
-        system->disco.dados[i].instrucao.Register2 = 0;
-        system->disco.dados[i].instrucao.Register = 0;
-        system->disco.dados[i].instrucao.Opcode = 0;
-        system->disco.dados[i].instrucao.coreIDR = 0;
-        system->disco.dados[i].instrucao.coreIDR1 = 0;
-        system->disco.dados[i].instrucao.coreIDR2 = 0;
-    }
-}
-```
-Explicação:
-
-1. Inicializa os registradores de cada núcleo a zero.
-2. O contador de programa (pc) é configurado para zero.
-3. A cache é inicializada, com índices e dados limpos.
-4. A memória e o disco são zerados, garantindo que todas as entradas estejam em um estado inicial.
+ - R1 = 15
+ - R2 = 10
+Como R1 != R2, a instrução IF_EQUAL não causa mudança no fluxo de execução e o programa continua normalmente.
 
 ___
 
