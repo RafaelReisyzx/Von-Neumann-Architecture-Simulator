@@ -1,7 +1,7 @@
 #include "system.h"
 
-void inicializarSistema(CPU *cpu,SYSTEM *system) {
-	int i,j;
+void inicializarSistema(CPU *cpu, SYSTEM *system) {
+    int i, j;
     for (i = 0; i < NUM_CORES; i++) {
         for (j = 0; j < NUM_REGISTRADORES; j++) {
             cpu->cores[i].registradores[j] = 0; 
@@ -24,8 +24,6 @@ void inicializarSistema(CPU *cpu,SYSTEM *system) {
         system->memoria.dados[i].instrucao.coreIDR = 0;
         system->memoria.dados[i].instrucao.coreIDR1 = 0;
         system->memoria.dados[i].instrucao.coreIDR2 = 0;
-       
-
     }
 
     for (i = 0; i < DISK_SIZE; i++) {
@@ -37,8 +35,8 @@ void inicializarSistema(CPU *cpu,SYSTEM *system) {
         system->disco.dados[i].instrucao.coreIDR = 0;
         system->disco.dados[i].instrucao.coreIDR1 = 0;
         system->disco.dados[i].instrucao.coreIDR2 = 0;
-
     }
+
     system->periferico[0].nome = "Teclado";
     system->periferico[0].disponivel = true;
 
@@ -52,19 +50,16 @@ void inicializarSistema(CPU *cpu,SYSTEM *system) {
     system->periferico[3].disponivel = true;
 }
 
-void exibirInformacoes(CPU *cpu,SYSTEM *system) {
+void exibirInformacoes(CPU *cpu, SYSTEM *system) {
     int i;
- 
-                for (i = 0; i < NUM_CORES; i++) {
-                    printf("\nCore %d:\n", i);
-                    exibirRegistradores(&cpu->cores[i]);
-                }
-               
-                exibirMemoriaPrincipal(&system->memoria);
-    
-                exibirMemoriaSecundaria(&system->disco);
-   
+    for (i = 0; i < NUM_CORES; i++) {
+        printf("\nCore %d:\n", i);
+        exibirRegistradores(&cpu->cores[i]);
+    }
+    exibirMemoriaPrincipal(&system->memoria);
+    exibirMemoriaSecundaria(&system->disco);
 }
+
 
 void InstructionsMemory(CPU *cpu,SYSTEM *system,int code,int *saida, int *operando1,int coreIDR,int coreIDR1,int r,int r1){
 int STORE=8;
@@ -130,6 +125,7 @@ void carregarInstrucoesDeArquivo(const char* caminho, SYSTEM* system, int* conta
 }
 
 
+
 void carregarValoresIniciais(const char* caminho, CPU* cpu, SYSTEM* system) {
     FILE* arquivo = fopen(caminho, "r");
     if (arquivo == NULL) {
@@ -145,15 +141,15 @@ void carregarValoresIniciais(const char* caminho, CPU* cpu, SYSTEM* system) {
             modo = 1;
         } else if (strstr(linha, "Memória Principal:")) {
             modo = 2;
-        } else if (strstr(linha, "Memória Secundaria:")) {
+        } else if (strstr(linha, "Memória Secundária:")) {
             modo = 3;
         } else if (isdigit(linha[0])) {
             int posicao, valor;
             sscanf(linha, "%d %d", &posicao, &valor);
 
             if (modo == 1) { 
-                int regID = posicao % NUM_REGISTRADORES; 
-                int coreID = 0; 
+                int regID = posicao % NUM_REGISTRADORES;
+                int coreID = posicao / NUM_REGISTRADORES;
                 if (coreID < NUM_CORES) {
                     cpu->cores[coreID].registradores[regID] = valor;
                 }
@@ -171,3 +167,4 @@ void carregarValoresIniciais(const char* caminho, CPU* cpu, SYSTEM* system) {
 
     fclose(arquivo);
 }
+
