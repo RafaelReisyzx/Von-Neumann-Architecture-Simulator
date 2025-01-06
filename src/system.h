@@ -7,13 +7,14 @@
 #include <time.h>
 #include <string.h>
 #include <ctype.h>
+#include <pthread.h>
+#include <unistd.h>
 
 #include "memoria.h"
 #include "cpu.h"
 
 #define NUM_PERIFERICOS 4
 #define MAX_LINHA 100
-
 
 typedef struct {
     char* nome;
@@ -32,5 +33,6 @@ void InstructionsMemory(CPU *cpu, SYSTEM *system, int code, int *saida, int *ope
 int opcodeFromString(const char* instrucao);
 void carregarInstrucoesDeArquivo(const char* caminho, SYSTEM* system, int* contador);
 void carregarValoresIniciais(const char *caminho, CPU *cpu, SYSTEM *system);
+
 
 #endif
