@@ -1,7 +1,7 @@
-CXX      := gcc  # Para código C
+CXX      := gcc 
 
 CXXFLAGS := -Wall -Wextra -Werror
-LDFLAGS  := -lm  # Remova -lstdc++ para código C
+LDFLAGS  := -lm -lpthread 
 
 BUILD    := ./build
 OBJ_DIR  := $(BUILD)/objects
@@ -23,7 +23,7 @@ $(OBJ_DIR)/%.o: %.c
 
 $(APP_DIR)/$(TARGET): $(OBJECTS)
 	@mkdir -p $(@D)
-	$(CXX) $(CXXFLAGS) $(INCLUDE) $(LDFLAGS) -o $(APP_DIR)/$(TARGET) $(OBJECTS)
+	$(CXX) $(CXXFLAGS) $(INCLUDE) -o $(APP_DIR)/$(TARGET) $(OBJECTS) $(LDFLAGS)
 
 .PHONY: all build clean debug release run
 
